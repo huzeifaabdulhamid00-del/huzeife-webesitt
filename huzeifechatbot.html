@@ -4,484 +4,296 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ሁዘይፈ AI ቻት ቦት</title>
+    <meta name="description" content="በአማርኛ እና በእንግሊዝኛ የሚያወራ AI ቻት ቦት። ሁዘይፈ ፈጣን እና ትክክለኛ ምላሽ ይሰጣል።">
+    <meta name="keywords" content="ሁዘይፈ, AI, ቻት ቦት, አማርኛ, Ethiopia, Amharic, chatbot, AI chat, Ethiopia, technology">
+    <meta name="author" content="ሁዘይፈ">
+    <meta name="robots" content="index, follow">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-        
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f4f4f9;
+            background-color: #f3f4f6;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 1rem;
         }
-
-        .chat-container {
-            width: 95%;
-            /* መጠኑን ወደ ትልቅ ስፋት አስፋው */
-            max-width: 800px;
-            /* ከፍታውን ለትልልቅ ስክሪኖች አስተካክለው */
-            height: 95vh;
-            min-height: 500px;
-            background-color: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border: 4px solid #ef4444; /* ቀይ ድንበር */
-        }
-        
-        .chat-header {
-            background-color: #16a34a; /* ጥቁር አረንጓዴ */
+        .header {
+            width: 100%;
+            background-color: #1a237e;
             color: white;
-            padding: 1.25rem;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-            position: relative;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
         }
-
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        .header-menu button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+            padding: 0.5rem;
+        }
+        .container {
+            width: 95%;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 80vh;
+            margin-top: 80px;
+            margin-bottom: 20px;
+        }
         .chat-messages {
-            flex: 1;
-            padding: 1.25rem;
+            flex-grow: 1;
+            padding: 1rem;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 1rem;
         }
-
         .message {
-            padding: 0.75rem 1rem;
-            border-radius: 1.25rem;
             max-width: 80%;
-            word-wrap: break-word;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
             line-height: 1.5;
-            animation: fadeIn 0.5s ease-in-out;
-            position: relative;
         }
-        
         .user-message {
-            background-color: #dcf8c6;
             align-self: flex-end;
-            border-bottom-right-radius: 0.25rem;
+            background-color: #e0e7ff;
         }
-        
         .bot-message {
-            background-color: #fcd34d; /* ቢጫ */
             align-self: flex-start;
-            border-bottom-left-radius: 0.25rem;
+            background-color: #f0f4f8;
         }
-
-        .chat-input-container {
-            padding: 1.25rem;
-            background-color: #ffffff;
-            border-top: 1px solid #e0e0e0;
+        .chat-input {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        #chat-form {
-            display: flex;
-            flex-direction: column; /* እቃዎችን በአቀባዊ ማስተካከል */
-            gap: 0.75rem;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 0.75rem;
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
             align-items: center;
+        }
+        .chat-input input {
             width: 100%;
-        }
-
-        #user-input {
-            flex: 1;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
             padding: 0.75rem 1.25rem;
-            border: 1px solid #ccc;
-            border-radius: 1.5rem;
             outline: none;
-            font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 0.5rem;
         }
-        
-        #user-input:focus {
-            border-color: #16a34a;
-            box-shadow: 0 0 5px rgba(22, 163, 74, 0.5);
-        }
-
-        #send-btn {
-            background-color: #16a34a; /* አረንጓዴ */
-            color: white;
-            border: none;
-            border-radius: 1.5rem;
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%; /* ሙሉ ስፋቱን እንዲይዝ ማድረግ */
-            transition: transform 0.2s ease, box-shadow 0.3s ease;
-        }
-
-        #send-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4);
-        }
-
-        #send-btn:active {
-            transform: translateY(0);
-        }
-        
-        .tts-btn {
-            background-color: #fff;
-            color: #16a34a;
-            border: 1px solid #16a34a;
-            border-radius: 50%;
-            width: 2.2rem;
-            height: 2.2rem;
+        .chat-input .buttons-row {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            position: absolute;
-            bottom: 0.3rem;
-            right: -0.6rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: background-color 0.2s ease, transform 0.2s ease;
+            justify-content: space-between;
+            width: 100%;
+            gap: 0.5rem;
         }
-
-        .tts-btn:hover {
-            background-color: #e0eaff;
-            transform: scale(1.05);
-        }
-
-        .loading-dots {
-            font-size: 2.5em;
-            letter-spacing: -2px;
-            color: #16a34a;
-            animation: blink 1.2s infinite ease-in-out;
-        }
-
-        .image-preview-container {
-            display: none;
-            align-items: center;
-            gap: 0.75rem;
+        .chat-input button {
             padding: 0.75rem;
-            background-color: #f1f0f0;
-            border-radius: 0.75rem;
-        }
-
-        #image-preview {
-            width: 3.75rem;
-            height: 3.75rem;
-            object-fit: cover;
-            border-radius: 0.5rem;
-            border: 2px solid #ccc;
-        }
-
-        #clear-image-btn {
-            background: #e0e0e0;
             border: none;
-            color: #333;
-            border-radius: 50%;
-            width: 1.5rem;
-            height: 1.5rem;
+            border-radius: 9999px;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
-
-        #upload-image-btn {
-            background: none;
-            border: 2px solid #16a34a;
-            color: #16a34a;
-            padding: 0.5rem 0.75rem;
-            border-radius: 1.25rem;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        .chat-input .send-btn {
+            background-color: #fbc02d;
+            color: white;
+            flex-grow: 1;
         }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .chat-input .send-btn:hover {
+            background-color: #f9a825;
         }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 1; }
+        .chat-input .icon-btn {
+            background-color: #f3f4f6;
+            color: #1a237e;
         }
-
-        /* ለትናንሽ ማያ ገጾች ማስተካከያ */
-        @media (max-width: 640px) {
-            .chat-container {
-                width: 100%;
-                height: 100vh;
-                border-radius: 0;
-                min-height: 100vh;
-            }
+        .chat-input .icon-btn:hover {
+            background-color: #e5e7eb;
         }
     </style>
-</head>
-<body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h2>ሁዘይፈ</h2>
-            <button id="new-chat-btn" class="bg-white text-[#16a34a] px-4 py-2 rounded-full font-bold text-sm shadow-lg transition-all hover:bg-gray-100">አዲስ ውይይት ✨</button>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-            <!-- Messages will be displayed here -->
-        </div>
-        <div class="chat-input-container">
-            <div class="image-preview-container" id="image-preview-container">
-                <img id="image-preview" src="#" alt="Image Preview">
-                <button id="clear-image-btn">X</button>
-            </div>
-            <form id="chat-form">
-                <div class="input-row">
-                    <label for="image-upload" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full cursor-pointer flex items-center justify-center transition-colors hover:bg-gray-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                            <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.69.491L2.002 12V3a1 1 0 0 1 1-1h12z"/>
-                        </svg>
-                    </label>
-                    <input type="file" id="image-upload" accept="image/*" class="hidden">
-                    <input type="text" id="user-input" placeholder="እባክዎ ስምዎን ያስገቡ..." required>
-                </div>
-                <button type="submit" id="send-btn">ላክ</button>
-            </form>
-        </div>
-    </div>
-
+    
     <script>
-        // DOM elements
-        const chatForm = document.getElementById('chat-form');
-        const userInput = document.getElementById('user-input');
-        const chatMessages = document.getElementById('chat-messages');
-        const newChatBtn = document.getElementById('new-chat-btn');
-        const imageUploadInput = document.getElementById('image-upload');
-        const imagePreviewContainer = document.getElementById('image-preview-container');
-        const imagePreview = document.getElementById('image-preview');
-        const clearImageBtn = document.getElementById('clear-image-btn');
-
-        // State variables
-        let userName = '';
-        let nameEntered = false;
-        let chatHistory = [];
-        let selectedImageFile = null;
-        
-        // This is your Gemini API Key
-        const apiKey = 'AIzaSyDxzkxoj_Is8weJq0nEFPftTwyd0iTw6HA';
-
-        // Display initial welcome message
-        addMessage('bot', `ሰላም! እኔ ሁዘይፈ ነኝ። ውይይት ለመጀመር እባክዎ ስምዎን ያስገቡ።`);
-        chatHistory.push({ role: "model", parts: [{ text: "ሰላም! እኔ ሁዘይፈ ነኝ። ውይይት ለመጀመር እባክዎ ስምዎን ያስገቡ።" }] });
-
-        // Function to add messages to the chat interface
-        function addMessage(sender, message, imageDataUrl) {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+        document.addEventListener('DOMContentLoaded', () => {
+            const messagesContainer = document.getElementById('messages');
+            const userInput = document.getElementById('userInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const imageBtn = document.getElementById('imageBtn');
+            const imageInput = document.getElementById('imageInput');
+            const voiceBtn = document.getElementById('voiceBtn');
+            const restartBtn = document.getElementById('restartBtn');
             
-            if (imageDataUrl) {
-                const imgElement = document.createElement('img');
-                imgElement.src = imageDataUrl;
-                imgElement.classList.add('w-24', 'h-24', 'rounded-lg', 'mb-2', 'border', 'border-gray-300', 'object-cover');
-                messageElement.appendChild(imgElement);
-            }
-            
-            if (message) {
-                const textNode = document.createTextNode(message);
-                messageElement.appendChild(textNode);
-            }
+            let conversationHistory = [{
+                role: "user",
+                parts: [{ text: "Start a friendly conversation. If the user asks for your name, say 'ሁዘይፈ ነኝ።' Use emojis in your responses." }]
+            }];
 
-            chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            return messageElement;
-        }
-        
-        // Function to add a loading indicator
-        function addLoadingIndicator() {
-            const loadingElement = document.createElement('div');
-            loadingElement.classList.add('bot-message', 'message');
-            loadingElement.id = 'loading-indicator';
-            loadingElement.innerHTML = '<span class="loading-dots">...</span>';
-            chatMessages.appendChild(loadingElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+            sendBtn.addEventListener('click', () => sendMessage(userInput.value));
+            userInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage(userInput.value);
+                }
+            });
 
-        // Function to remove the loading indicator
-        function removeLoadingIndicator() {
-            const loadingElement = document.getElementById('loading-indicator');
-            if (loadingElement) {
-                loadingElement.remove();
-            }
-        }
-        
-        // Handle image selection and preview
-        imageUploadInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                selectedImageFile = file;
+            imageBtn.addEventListener('click', () => {
+                imageInput.click();
+            });
+
+            imageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    imagePreview.src = e.target.result;
-                    imagePreviewContainer.style.display = 'flex';
+                reader.onloadend = () => {
+                    const base64data = reader.result.split(',')[1];
+                    sendMessage("ስዕል ተልኳል", true, base64data);
                 };
                 reader.readAsDataURL(file);
-            }
-        });
+            });
+            
+            // Voice Input Logic
+            let recognition = null;
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.lang = 'am-ET';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
 
-        // Handle clearing the selected image
-        clearImageBtn.addEventListener('click', () => {
-            selectedImageFile = null;
-            imageUploadInput.value = null;
-            imagePreview.src = '#';
-            imagePreviewContainer.style.display = 'none';
-        });
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    userInput.value = transcript;
+                    sendMessage(transcript);
+                };
 
-        // Handle the chat submission
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const message = userInput.value.trim();
-
-            if (!nameEntered) {
-                if (message === '') return;
-                userName = message;
-                nameEntered = true;
-                userInput.placeholder = "መልዕክትዎን ይጻፉ...";
-                addMessage('user', userName);
-                chatHistory.push({ role: "user", parts: [{ text: userName }] });
-                setTimeout(async () => {
-                    addLoadingIndicator();
-                    const welcomeResponse = await getGeminiResponse(`ሰላም! እኔ ሁዘይፈ ነኝ። ስምዎ ${userName} ነው። እንዴት ልረዳህ እችላለሁ?`);
-                    removeLoadingIndicator();
-                    addMessage('bot', welcomeResponse);
-                    chatHistory.push({ role: "model", parts: [{ text: welcomeResponse }] });
-                }, 500);
+                voiceBtn.addEventListener('click', () => {
+                    recognition.start();
+                });
             } else {
-                if (message === '' && !selectedImageFile) {
-                    return;
-                }
+                voiceBtn.style.display = 'none';
+            }
+
+            restartBtn.addEventListener('click', () => {
+                messagesContainer.innerHTML = `<div class="message bot-message">ሰላም! እኔ ሁዘይፈ AI ቻት ቦት ነኝ። እንዴት ልረዳህ እችላለሁ?</div>`;
+                conversationHistory = [{
+                    role: "user",
+                    parts: [{ text: "Start a friendly conversation. If the user asks for your name, say 'ሁዘይፈ ነኝ።' Use emojis in your responses." }]
+                }];
+            });
+
+            async function sendMessage(messageText, isImage = false, base64Image = null) {
+                const userMessageText = messageText.trim();
+                if (!userMessageText && !isImage) return;
+
+                // Display user's message
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.classList.add('message', 'user-message');
+                userMessageDiv.textContent = userMessageText;
+                messagesContainer.appendChild(userMessageDiv);
                 
-                const userMessageParts = [];
-                let imageDataUrl = null;
-                if (selectedImageFile) {
-                    imageDataUrl = imagePreview.src;
-                    const base64Data = imageDataUrl.split(',')[1];
-                    userMessageParts.push({
-                        inlineData: {
-                            mimeType: selectedImageFile.type,
-                            data: base64Data
-                        }
+                // Clear input
+                userInput.value = '';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                const botMessageDiv = document.createElement('div');
+                botMessageDiv.classList.add('message', 'bot-message');
+                botMessageDiv.textContent = '...እየጻፍኩ ነው';
+                messagesContainer.appendChild(botMessageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${""}`;
+
+                let payload;
+                if (isImage && base64Image) {
+                    payload = {
+                        contents: [{
+                            role: "user",
+                            parts: [
+                                { text: `የተላከውን ምስል አይተህ በአማርኛ መልስ ስጥ። ጥያቄው፡ ${userMessageText}` },
+                                {
+                                    inlineData: {
+                                        mimeType: "image/jpeg",
+                                        data: base64Image
+                                    }
+                                }
+                            ]
+                        }],
+                    };
+                } else {
+                    conversationHistory.push({
+                        role: "user",
+                        parts: [{ text: userMessageText }]
                     });
+                    payload = {
+                        contents: conversationHistory,
+                    };
                 }
 
-                if (message) {
-                    userMessageParts.push({ text: message });
-                }
-
-                addMessage('user', message, imageDataUrl);
-                chatHistory.push({ role: "user", parts: userMessageParts });
-
-                // Clear the image after sending
-                selectedImageFile = null;
-                imagePreviewContainer.style.display = 'none';
-                imageUploadInput.value = null;
-
-                addLoadingIndicator();
-                const response = await getGeminiResponse();
-                removeLoadingIndicator();
-                addMessage('bot', response);
-                chatHistory.push({ role: "model", parts: [{ text: response }] });
-            }
-            
-            userInput.value = '';
-        });
-
-        // Function to clear the chat and start a new one
-        newChatBtn.addEventListener('click', () => {
-            chatMessages.innerHTML = '';
-            chatHistory = [];
-            userName = '';
-            nameEntered = false;
-            userInput.value = '';
-            userInput.placeholder = "እባክዎ ስምዎን ያስገቡ...";
-            addMessage('bot', `ሰላም! እኔ ሁዘይፈ ነኝ። ውይይት ለመጀመር እባክዎ ስምዎን ያስገቡ።`);
-        });
-        
-        // Gemini API call function for text and image generation
-        async function getGeminiResponse(promptText = null) {
-            if (!apiKey) {
-                console.error("API Error: API Key is not available.");
-                return `ይቅርታ፣ ይህ አፕሊኬሽን በትክክል ለመስራት የኤፒአይ ቁልፍ ይፈልጋል። እባክዎን የገንቢውን ቡድን ያነጋግሩ።`;
-            }
-            
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-            
-            const systemInstruction = {
-                parts: [{
-                    text: "You are a friendly chatbot named Huzeife. Your responses should be in Amharic only. Be concise and helpful."
-                }]
-            };
-
-            const payload = {
-                contents: promptText ? [{ role: "user", parts: [{ text: promptText }] }] : chatHistory,
-                systemInstruction: systemInstruction,
-            };
-
-            const maxRetries = 3;
-            let retries = 0;
-            while (retries < maxRetries) {
                 try {
                     const response = await fetch(apiUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-
-                    if (response.status === 429) {
-                        retries++;
-                        const delay = Math.pow(2, retries) * 1000;
-                        console.log(`Rate limit exceeded. Retrying in ${delay / 1000}s...`);
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        continue;
-                    }
-
+        
                     if (!response.ok) {
-                        const errorData = await response.json();
-                        console.error('API call failed:', errorData);
-                        throw new Error(`API call failed with status ${response.status}: ${JSON.stringify(errorData)}`);
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-
-                    const result = await response.json();
-                    const text = result?.candidates?.[0]?.content?.parts?.[0]?.text || "ይቅርታ፣ ምላሽ መስጠት አልቻልኩም። እባክዎ እንደገና ይሞክሩ።";
+        
+                    const data = await response.json();
                     
-                    if (!promptText) {
-                         chatHistory.push({
-                            role: "model",
-                            parts: [{ text: text }]
-                        });
-                    }
-
-                    return text;
-
+                    const botResponseText = data.candidates[0].content.parts[0].text;
+                    
+                    // Update loading message with bot's response
+                    botMessageDiv.textContent = botResponseText;
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    
+                    conversationHistory.push({
+                        role: "model",
+                        parts: [{ text: botResponseText }]
+                    });
+        
                 } catch (error) {
-                    console.error('Error fetching from Gemini API:', error);
-                    return "ይቅርታ፣ አንድ ችግር ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።";
+                    console.error("Error fetching AI response:", error);
+                    botMessageDiv.textContent = "አዝናለሁ፣ መልስ ለመስጠት አልቻልኩም። በኋላ ሞክር።";
                 }
             }
-            return "ከመጠን በላይ ሙከራዎች ምክንያት ምላሽ መስጠት አልተቻለም። እባክዎ ቆይተው እንደገና ይሞክሩ።";
-        }
+        });
     </script>
+</head>
+<body>
+    <div class="header">
+        <h1>ሁዘይፈ AI ቻት ቦት</h1>
+        <div class="header-menu">
+            <button id="restartBtn">ዳግም ጀምር</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="chat-messages" id="messages">
+            <div class="message bot-message">ሰላም! እኔ ሁዘይፈ AI ቻት ቦት ነኝ። እንዴት ልረዳህ እችላለሁ?</div>
+        </div>
+        <div class="chat-input flex flex-col p-4 border-t border-gray-200">
+            <input type="text" id="userInput" placeholder="መልዕክትህን ጻፍ..." class="p-3 rounded-full border border-gray-300 outline-none w-full mb-2">
+            <div class="buttons-row flex justify-end items-center space-x-2 w-full">
+                <input type="file" id="imageInput" accept="image/*" class="hidden">
+                <button id="imageBtn" class="bg-gray-100 text-blue-800 p-3 rounded-full">🖼️</button>
+                <button id="voiceBtn" class="bg-gray-100 text-blue-800 p-3 rounded-full">🎙️</button>
+                <button id="sendBtn" class="bg-yellow-400 text-white p-3 rounded-full flex-grow">ላክ</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
