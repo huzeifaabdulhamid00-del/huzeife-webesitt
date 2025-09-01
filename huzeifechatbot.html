@@ -214,7 +214,8 @@
                 messagesContainer.appendChild(botMessageDiv);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${""}`;
+                const apiKey = "AIzaSyCfsw6fUpV8DGtngk4pYjV54YhwBmfC1MI";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
                 let payload;
                 if (isImage && base64Image) {
@@ -297,4 +298,4 @@
     </div>
 </body>
 </html>
-
+።
